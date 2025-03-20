@@ -33,6 +33,7 @@ router.register(r'notifications', NotificationViewSet, basename='notification')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/exports/', include('exports.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),
     path('', SpectacularSwaggerView.as_view(url_name='api-schema'), name='swagger-ui'),
