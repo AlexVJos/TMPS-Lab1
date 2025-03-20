@@ -1,7 +1,4 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 import uuid
@@ -11,7 +8,7 @@ import copy
 class DocumentMetadata(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authored_documents')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authored_%(class)s')
     status = models.CharField(max_length=20, choices=[
         ('draft', 'Draft'),
         ('review', 'Under Review'),
