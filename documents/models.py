@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.cache import cache
 import uuid
 import copy
 
@@ -39,6 +40,11 @@ class Document(DocumentMetadata):
 
     # prototype
     def clone(self):
+        cache_key = f"document_clone_{self.unique_id}"
+        cached_document = cache.get(cache_key)
+        if cached_document:
+            return cached_document
+
         new_document = copy.deepcopy(self)
         new_document.pk = None
         new_document.unique_id = uuid.uuid4()
@@ -48,6 +54,9 @@ class Document(DocumentMetadata):
         new_document.created_at = timezone.now()
         new_document.updated_at = timezone.now()
         new_document.custom_notes = self.custom_notes
+
+        cache.set(cache_key, new_document, timeout=3600)
+
         return new_document
 
     def __str__(self):
