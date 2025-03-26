@@ -35,17 +35,19 @@ class Document(DocumentMetadata):
     title = models.CharField(max_length=255)
     document_type = models.ForeignKey(DocumentType, on_delete=models.CASCADE)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    custom_notes = models.TextField(blank=True, null=True)
 
-    # Метод прототипа - создание копии документа
+    # prototype
     def clone(self):
         new_document = copy.deepcopy(self)
         new_document.pk = None
         new_document.unique_id = uuid.uuid4()
         new_document.title = f"Copy of {self.title}"
         new_document.status = 'draft'
-        new_document.version = 1
+        new_document.version = self.version + 1
         new_document.created_at = timezone.now()
         new_document.updated_at = timezone.now()
+        new_document.custom_notes = self.custom_notes
         return new_document
 
     def __str__(self):

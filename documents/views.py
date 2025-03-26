@@ -31,7 +31,10 @@ class ContractViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def clone(self, request, pk=None):
         original = self.get_object()
+        custom_field = request.data.get('custom_notes')
         cloned = original.clone()
+        if custom_field:
+            cloned.custom_notes = custom_field
         cloned.save()
 
         notification_service = NotificationService()

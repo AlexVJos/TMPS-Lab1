@@ -21,8 +21,14 @@ class ContractSerializer(serializers.ModelSerializer):
         model = Contract
         fields = ['id', 'title', 'document_type', 'unique_id', 'author', 'status',
                   'version', 'created_at', 'updated_at', 'party_name', 'start_date',
-                  'end_date', 'contract_value', 'terms_conditions', 'attachments']
+                  'end_date', 'contract_value', 'terms_conditions', 'attachments', 'custom_notes']
         read_only_fields = ['id', 'unique_id', 'created_at', 'updated_at']
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if instance.version == 1 or ret['custom_notes'] is None:
+            ret.pop('custom_notes', None)
+        return ret
 
 
 class ReportSerializer(serializers.ModelSerializer):
